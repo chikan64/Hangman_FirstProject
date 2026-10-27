@@ -1,4 +1,4 @@
-package TicToe;
+package HangMan;
 
 
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class HangMan {
-    public static String[] symbols;
+    public static List<String> symbols=new ArrayList<>();;
     public static List<String> wordsAsList;
     public static Scanner scanner = new Scanner(System.in);
 
@@ -45,28 +45,27 @@ public class HangMan {
         int guessedLetters=0;
         HashSet<String> writtenWord = new HashSet<>();
         int i=0;
-        String letterOfChoice=null;
+        String letterOfChoice;
         System.out.println(playground);
-        while ((errorCounter<3)&&(guessedLetters!=chosenWord.size())) {
+        while ((errorCounter<4)&&(guessedLetters!=chosenWord.size())) {
             System.out.println("Введите строчную букву");
             letterOfChoice = scanner.nextLine();
             //начало проверок
-            if (letterCorectness(letterOfChoice)) continue;
+            if (letterCorectness(letterOfChoice)) continue; // true - если ввели число, заглавную букву
             if (letterRepeating(letterOfChoice,writtenWord,i)) continue;
             else writtenWord.add(letterOfChoice);
-            errorCounter = (letterPresence(chosenWord,letterOfChoice,errorCounter));
+            errorCounter = letterPresence(chosenWord,letterOfChoice,errorCounter);
             //конец проверок
             while (chosenWord.contains(letterOfChoice)){
                 playground.set(chosenWord.indexOf(letterOfChoice),letterOfChoice);
                 chosenWord.set(chosenWord.indexOf(letterOfChoice)," ");
                 guessedLetters++;
             }
-
             i++;
             System.out.println(playground);
 
         }
-        if (errorCounter>=3) System.out.println("Вы проиграли. Ну ничего страшного");
+        if (errorCounter>=4) System.out.println("Вы проиграли");
         else System.out.println("Вы выйграли. Поздравляю!");
         main(null);
     }
@@ -95,9 +94,7 @@ public class HangMan {
         return splittedWord;
     }
     static void symbolsLoading(){
-        symbols= new String[4];
-        symbols[0]=null;
-        symbols[1] = " ___________.._______\n" +
+        symbols.add( " ___________.._______\n" +
                 "| .__________))______|\n" +
                 "| | / /      ||\n" +
                 "| |/ /       ||\n" +
@@ -105,8 +102,8 @@ public class HangMan {
                 "| |/         |/  _  \\\n" +
                 "| |          ||  `/,|\n" +
                 "| |          (\\\\`_.'\n" +
-                "| |         .-`--'.";
-        symbols[2] = " ___________.._______\n" +
+                "| |         .-`--'.");
+        symbols.add( " ___________.._______\n" +
                 "| .__________))______|\n" +
                 "| | / /      ||\n" +
                 "| |/ /       ||\n" +
@@ -114,11 +111,11 @@ public class HangMan {
                 "| |/         |/  _  \\\n" +
                 "| |          ||  `/,|\n" +
                 "| |          (\\\\`_.'\n" +
-                "| |         .-`--'.| |        /Y . . Y\\\n" +
+                "| |         .-`--'.| |       \\\n" +
                 "| |       // |   | \\\\\n" +
                 "| |      //  | . |  \\\\\n" +
-                "| |     ')   |   |   (`";
-        symbols[3] = " ___________.._______\n" +
+                "| |     ')   |   |   (`");
+        symbols.add(" ___________.._______\n" +
                 "| .__________))______|\n" +
                 "| | / /      ||\n" +
                 "| |/ /       ||\n" +
@@ -129,7 +126,23 @@ public class HangMan {
                 "| |         .-`--'.| |        \\\n" +
                 "| |       // |   | \\\\\n" +
                 "| |      //  | . |  \\\\\n" +
-                "| |     ')   |   |   (`| |          ||'||\n" +
+                "| |     ')   |   |   (`| |         \n" +
+                "| |          || ||\n" +
+                "| |          || ||\n" +
+                "| |          || ||\n" +
+                "| |         / | | \\\n");
+        symbols.add( " ___________.._______\n" +
+                "| .__________))______|\n" +
+                "| | / /      ||\n" +
+                "| |/ /       ||\n" +
+                "| | /        ||.-''.\n" +
+                "| |/         |/  _  \\\n" +
+                "| |          ||  `/,|\n" +
+                "| |          (\\\\`_.'\n" +
+                "| |         .-`--'.| |        \\\n" +
+                "| |       // |   | \\\\\n" +
+                "| |      //  | . |  \\\\\n" +
+                "| |     ')   |   |   (`| |         \n" +
                 "| |          || ||\n" +
                 "| |          || ||\n" +
                 "| |          || ||\n" +
@@ -138,7 +151,7 @@ public class HangMan {
                 "|\"|\"\"\"\"\"\"\"\\ \\       '\"|\"|\n" +
                 "| |        \\ \\        | |\n" +
                 ": :         \\ \\       : :  \n" +
-                ". .          `'       . .\n       THE END OF THE GAME";
+                ". .          `'       . .\n       THE END OF THE GAME");
     }
     public static boolean letterCorectness(String letterOfChoice) {
         boolean a =false;
@@ -157,7 +170,7 @@ public class HangMan {
         return a;
     }
     public static boolean isNumeric(String str) {
-        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+        return str.matches("-?\\d+(\\.\\d+)?");  //проверка на цифру
     }
 
     public static int letterPresence(List<String> chosenWord, String letterOfChoice, int errorCounter) {
@@ -165,7 +178,7 @@ public class HangMan {
         if(!chosenWord.contains(letterOfChoice)){
             errorCounter++;
             System.out.println("Такой буквы нет. Количество ошибок: "+errorCounter);
-            System.out.println(symbols[errorCounter]);
+            System.out.println(symbols.get(errorCounter-1));
 
         }
         return errorCounter;
